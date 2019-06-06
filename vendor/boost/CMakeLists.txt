@@ -83,8 +83,8 @@ else()
 endif()
 
 ExternalProject_Add(boost
-  URL https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.tar.bz2
-  URL_HASH SHA256=7f6130bc3cf65f56a618888ce9d5ea704fa10b462be126ad053e80e553d6d8b7
+  URL https://dl.bintray.com/boostorg/release/1.69.0/source/boost_1_69_0.tar.bz2
+  URL_HASH SHA256=8f32d4617390d1c2d16f26a27ab60d97807b35440d45891fa340fc2648b04406
   BUILD_IN_SOURCE 1
   UPDATE_COMMAND ""
   PATCH_COMMAND ""
