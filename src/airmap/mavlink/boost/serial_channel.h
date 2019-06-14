@@ -35,6 +35,7 @@ class SerialChannel : public Channel, public std::enable_shared_from_this<Serial
   // From Channel
   void start_impl() override;
   void stop_impl() override;
+  void send_impl(const mavlink_message_t& message) override;
 
  private:
   void flush();

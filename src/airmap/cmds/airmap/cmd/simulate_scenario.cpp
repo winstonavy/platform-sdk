@@ -73,6 +73,7 @@ class TcpRouteMonitor : public airmap::mavlink::boost::TcpRoute::Monitor {
 
   // From airmap::mavlink::boost::TcpRoute::Monitor
   void on_new_session(const std::shared_ptr<airmap::mavlink::boost::TcpRoute::Session>& session) override {
+    std::cout << "test";
     // We announce all participants in the scenario.
     auto now = airmap::Clock::universal_time();
 
@@ -267,7 +268,7 @@ cmd::SimulateScenario::SimulateScenario()
       auto itE = collector_->scenario().participants.end();
 
       while (it != itE) {
-        this->request_authentication_for(it);
+        //this->request_authentication_for(it);
         // this->deactivate(it);
         ++it;
       }

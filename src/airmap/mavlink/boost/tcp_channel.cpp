@@ -34,6 +34,9 @@ void airmap::mavlink::boost::TcpChannel::stop_impl() {
   socket_.cancel();
 }
 
+void airmap::mavlink::boost::TcpChannel::send_impl(const mavlink_message_t& message) {
+}
+
 void airmap::mavlink::boost::TcpChannel::handle_read(const ::boost::system::error_code& ec, std::size_t transferred) {
   if (ec) {
     log_.errorf(component, "failed to read from tcp endpoint: %s", ec.message());

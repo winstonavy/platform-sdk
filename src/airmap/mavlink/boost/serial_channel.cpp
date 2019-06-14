@@ -34,6 +34,9 @@ void airmap::mavlink::boost::SerialChannel::stop_impl() {
   serial_port_.cancel();
 }
 
+void airmap::mavlink::boost::SerialChannel::send_impl(const mavlink_message_t& message) {
+}
+
 void airmap::mavlink::boost::SerialChannel::flush() {
   ::tcflush(serial_port_.native_handle(), TCIOFLUSH);
 }

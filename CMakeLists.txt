@@ -10,7 +10,7 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 option(AIRMAP_ENABLE_NETWORK_TESTS "enable tests requiring network access"       ON)
-option(AIRMAP_ENABLE_GRPC          "Enable libraries/executables requiring gRPC" OFF)
+option(AIRMAP_ENABLE_GRPC          "Enable libraries/executables requiring gRPC" ON)
 option(AIRMAP_ENABLE_QT            "Enable libraries/executables requiring Qt5"  OFF)
 
 if (AIRMAP_ENABLE_GRPC)

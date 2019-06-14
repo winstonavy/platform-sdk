@@ -45,6 +45,10 @@ void airmap::mavlink::Channel::stop() {
   stop_impl();
 }
 
+void airmap::mavlink::Channel::send(const mavlink_message_t& message) {
+  send_impl(message);
+}
+
 void airmap::mavlink::Channel::invoke_subscribers(const std::vector<mavlink_message_t>& msgs) {
   std::unique_lock<std::mutex> ul{guard_};
   auto subscribers = subscribers_;
@@ -108,4 +112,7 @@ void airmap::mavlink::FilteringChannel::start_impl() {
 
 void airmap::mavlink::FilteringChannel::stop_impl() {
   next_->unsubscribe(std::move(subscription_));
+}
+
+void airmap::mavlink::FilteringChannel::send_impl(const mavlink_message_t& message) {
 }

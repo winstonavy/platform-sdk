@@ -126,6 +126,20 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
               config.credentials, aircraft_id_, log_.logger(), channel, context, result.value(), grpc_endpoint_};
 
           ::airmap::monitor::Daemon::create(configuration)->start();
+          auto now = Clock::universal_time();
+
+          {
+            mavlink_message_t msg;
+            mavlink_msg_command_int_pack(0, 42, &msg, 0, 0, 0, MAV_CMD_COMPONENT_ARM_DISARM, 0, 0, 1, 0, 0, 0, 0, 0, 0);
+
+            channel->send(msg);
+          }
+          // {
+          //   mavlink_message_t msg;
+          //   mavlink_msg_heartbeat_pack(0, 42, &msg, MAV_TYPE_HELICOPTER, MAV_AUTOPILOT_GENERIC,
+          //                              MAV_MODE_GUIDED_ARMED, 0, MAV_STATE_POWEROFF);
+          //   channel->send(msg);
+          // }
         });
 
     return context->exec({SIGINT, SIGQUIT},

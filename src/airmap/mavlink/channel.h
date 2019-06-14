@@ -57,12 +57,14 @@ class Channel : DoNotCopyOrMove {
 
   void start();
   void stop();
+  void send(const mavlink_message_t& message);
 
  protected:
   Channel();
 
   virtual void start_impl() = 0;
   virtual void stop_impl()  = 0;
+  virtual void send_impl(const mavlink_message_t& message) = 0;
 
   void invoke_subscribers(const std::vector<mavlink_message_t>& msgs);
   Optional<std::vector<mavlink_message_t>> process_mavlink_data(const char* begin, const char* end);
@@ -89,6 +91,7 @@ class FilteringChannel : public Channel, public std::enable_shared_from_this<Fil
  protected:
   void start_impl();
   void stop_impl();
+  void send_impl(const mavlink_message_t& message);
 
  private:
   explicit FilteringChannel(const std::shared_ptr<Channel>& next, std::uint8_t system_id);

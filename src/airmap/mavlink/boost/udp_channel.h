@@ -20,6 +20,8 @@
 
 #include <boost/asio.hpp>
 
+#include <queue>
+
 namespace airmap {
 namespace mavlink {
 namespace boost {
@@ -35,14 +37,33 @@ class UdpChannel : public Channel, public std::enable_shared_from_this<UdpChanne
   // From Channel
   void start_impl() override;
   void stop_impl() override;
+  void send_impl(const mavlink_message_t& message) override;
 
  private:
+  class EncodedBuffer {
+   public:
+    std::size_t size() const;
+    void set_size(std::size_t size);
+
+    unsigned char* data();
+    const unsigned char* data() const;
+
+   private:
+    std::array<unsigned char, 1024> data_;
+    std::size_t size_;
+  };
+
   void handle_read(const ::boost::system::error_code& ec, std::size_t transferred);
+  void process();
 
   util::FormattingLogger log_;
   std::shared_ptr<::boost::asio::io_service> io_service_;
   ::boost::asio::ip::udp::socket socket_;
+  ::boost::asio::ip::udp::endpoint endpoint_;
   std::array<char, buffer_size> buffer_;
+  std::queue<EncodedBuffer> buffers_;
+
+  int state_ = 0;
 };
 
 }  // namespace boost
