@@ -31,8 +31,6 @@ void airmap::mavlink::boost::UdpChannel::start_impl() {
 
   socket_.async_receive_from(::boost::asio::buffer(buffer_), endpoint_,
                              std::bind(&UdpChannel::handle_read, shared_from_this(), _1, _2));
-
-  state_ = 1;
 }
 
 void airmap::mavlink::boost::UdpChannel::stop_impl() {
@@ -55,36 +53,55 @@ const unsigned char* airmap::mavlink::boost::UdpChannel::EncodedBuffer::data() c
   return data_.data();
 }
 
-void airmap::mavlink::boost::UdpChannel::send_impl(const mavlink_message_t& message) {
+void airmap::mavlink::boost::UdpChannel::send(const mavlink_message_t& message) {
 
     // const mavlink_message_t& message;
     // std::array<char, 1> send_buf  = { 0 };
     // ::boost::asio::ip::udp::endpoint endpoint;
     // socket_.send_to(::boost::asio::buffer(send_buf), endpoint);
+  while (endpoint_.address().to_string() == "0.0.0.0") {
+    log_.infof(component, "WAIT");
+    sleep(1);
+  }
+
   log_.infof(component, "TEST");
-  if (state_ == 1)
-    log_.infof(component, "%s:%d", endpoint_.address().to_string(), endpoint_.port());
+
+  log_.infof(component, "%s:%d", endpoint_.address().to_string(), endpoint_.port());
   // log_.debugf(component, "processing mavlink message for session on endpoint %s:%d",
   //             socket_.remote_endpoint().address().to_string(), socket_.remote_endpoint().port());
 
   EncodedBuffer eb;
   eb.set_size(mavlink_msg_to_send_buffer(eb.data(), &message));
+  
+  log_.infof(component, "data %s", (char *)eb.data());
 
-  io_service_->post([sp = shared_from_this(), eb = std::move(eb)]() {
-    sp->buffers_.emplace(eb);
-    if (sp->buffers_.size() == 1)
-      sp->process();
-  });
+  uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+  uint16_t buffer_len = mavlink_msg_to_send_buffer(buffer, &message);
+
+
+  socket_.send_to(::boost::asio::buffer(buffer, buffer_len), endpoint_);
+
+  // io_service_->post([sp = shared_from_this(), eb = std::move(eb)]() {
+  //   sp->buffers_.emplace(eb);
+  //   if (sp->buffers_.size() == 1)
+  //     sp->process();
+  // });
 }
 
 void airmap::mavlink::boost::UdpChannel::process() {
   const auto& eb = buffers_.front();
 
-::boost::asio::ip::udp::endpoint destination(
-    ::boost::asio::ip::address::from_string("0.0.0.0"), 14540);
-log_.infof(component, "2222222");
+// ::boost::asio::ip::udp::endpoint destination(
+//     ::boost::asio::ip::address::from_string("127.0.0.1"), 14540);
+// log_.infof(component, "2222222");
 
-  socket_.async_send_to(::boost::asio::buffer(eb.data(), eb.size()), destination,
+  // socket_.send_to(::boost::asio::buffer(eb.data(), eb.size()), endpoint_);
+
+  // sp->buffers_.pop();
+  // if (!sp->buffers_.empty())
+  //   sp->process();
+
+  socket_.async_send_to(::boost::asio::buffer(eb.data(), eb.size()), endpoint_,
                              [sp = shared_from_this()](const auto& error, auto) {
                                sp->buffers_.pop();
 

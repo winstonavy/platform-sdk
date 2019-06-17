@@ -33,11 +33,12 @@ class UdpChannel : public Channel, public std::enable_shared_from_this<UdpChanne
   explicit UdpChannel(const std::shared_ptr<Logger>& logger,
                       const std::shared_ptr<::boost::asio::io_service>& io_service, std::uint16_t port);
 
+  void send(const mavlink_message_t& message) override;
+
  protected:
   // From Channel
   void start_impl() override;
   void stop_impl() override;
-  void send_impl(const mavlink_message_t& message) override;
 
  private:
   class EncodedBuffer {
@@ -62,8 +63,6 @@ class UdpChannel : public Channel, public std::enable_shared_from_this<UdpChanne
   ::boost::asio::ip::udp::endpoint endpoint_;
   std::array<char, buffer_size> buffer_;
   std::queue<EncodedBuffer> buffers_;
-
-  int state_ = 0;
 };
 
 }  // namespace boost

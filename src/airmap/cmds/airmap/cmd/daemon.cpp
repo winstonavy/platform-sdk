@@ -134,12 +134,12 @@ cmd::Daemon::Daemon() : cli::CommandWithFlagsAndAction{"daemon", "runs the airma
 
             channel->send(msg);
           }
-          // {
-          //   mavlink_message_t msg;
-          //   mavlink_msg_heartbeat_pack(0, 42, &msg, MAV_TYPE_HELICOPTER, MAV_AUTOPILOT_GENERIC,
-          //                              MAV_MODE_GUIDED_ARMED, 0, MAV_STATE_POWEROFF);
-          //   channel->send(msg);
-          // }
+          {
+            mavlink_message_t msg;
+            mavlink_msg_heartbeat_pack(0, 42, &msg, MAV_TYPE_HELICOPTER, MAV_AUTOPILOT_GENERIC,
+                                       MAV_MODE_GUIDED_ARMED, 0, MAV_STATE_POWEROFF);
+            channel->send(msg);
+          }
         });
 
     return context->exec({SIGINT, SIGQUIT},

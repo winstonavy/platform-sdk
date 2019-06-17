@@ -36,7 +36,6 @@ class TcpChannel : public Channel, public std::enable_shared_from_this<TcpChanne
   // From Channel
   void start_impl() override;
   void stop_impl() override;
-  void send_impl(const mavlink_message_t& message) override;
 
  private:
   void handle_read(const ::boost::system::error_code& ec, std::size_t transferred);

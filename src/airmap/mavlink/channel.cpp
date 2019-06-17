@@ -46,7 +46,7 @@ void airmap::mavlink::Channel::stop() {
 }
 
 void airmap::mavlink::Channel::send(const mavlink_message_t& message) {
-  send_impl(message);
+  // do nothing by default
 }
 
 void airmap::mavlink::Channel::invoke_subscribers(const std::vector<mavlink_message_t>& msgs) {
@@ -112,7 +112,4 @@ void airmap::mavlink::FilteringChannel::start_impl() {
 
 void airmap::mavlink::FilteringChannel::stop_impl() {
   next_->unsubscribe(std::move(subscription_));
-}
-
-void airmap::mavlink::FilteringChannel::send_impl(const mavlink_message_t& message) {
 }
